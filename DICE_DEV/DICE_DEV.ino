@@ -11,24 +11,22 @@
 
 */
 
-#include <SPI.h>
-#include <EEPROM.h>
 #include <Arduboy.h>
 #include <ArduboyExtra.h>
 #include <sprites.h>
 #include <simple_buttons.h>
+#include "menu.h"
 #include "game.h"
 #include "inputs.h"
-#include "menu.h"
+
 
 //determine the game
 #define GAME_ID 37
 
 Arduboy arduboy;
-SimpleButtons buttons (arduboy);
 
 typedef void (*FunctionPointer) ();
-FunctionPointer whatToDo[] = {
+FunctionPointer mainGameLoop[] = {
   stateMenuIntro,
   stateMenuMain,
   stateMenuHelp,
@@ -36,8 +34,6 @@ FunctionPointer whatToDo[] = {
   stateMenuInfo,
   stateMenuSoundfx,
   stateGamePlaying,
-  stateGamePause,
-  stateGameOve
 };
 
 byte gameState;

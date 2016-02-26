@@ -3,6 +3,7 @@
 
 #include "inputs.h"
 
+
 //define menu states (on main menu)
 #define STATE_MENU_INTRO         0
 #define STATE_MENU_MAIN          1
@@ -13,8 +14,7 @@
 
 //define game states (on main menu)
 #define STATE_GAME_PLAYING       6
-#define STATE_GAME_PAUSE         7
-#define STATE_GAME_OVER          8
+
 
 Sprites sprites(arduboy);
 
@@ -25,19 +25,6 @@ void stateGamePlaying()
 {
   checkInputs();
 }
-void stateGamePause()
-{
-  if (buttons.justPressed(A_BUTTON | B_BUTTON))
-  {
-    gameState = STATE_MENU_MAIN;
-  }
-}
-void stateGameOver()
-{
-  if (buttons.justPressed(A_BUTTON | B_BUTTON))
-  {
-    gameState = STATE_GAME_PLAYING;
-  }
-}
+
 
 #endif
