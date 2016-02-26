@@ -17,34 +17,30 @@
 #include <ArduboyExtra.h>
 #include <sprites.h>
 #include <simple_buttons.h>
+#include "game.h"
+#include "inputs.h"
+#include "menu.h"
 
 //determine the game
 #define GAME_ID 37
 
-//define menu states (on main menu)
-#define STATE_MENU_INTRO         0
-#define STATE_MENU_MAIN          1
-#define STATE_MENU_HELP          2
-#define STATE_MENU_PLAY          3
-#define STATE_MENU_INFO          4
-#define STATE_MENU_SOUNDFX       5
-
-//define game states (on main menu)
-#define STATE_GAME_PLAYING       6
-#define STATE_GAME_PAUSE         7
-#define STATE_GAME_OVER          8
-
 Arduboy arduboy;
 SimpleButtons buttons (arduboy);
 
-/*
 typedef void (*FunctionPointer) ();
-FunctionPointer whatToDo[] = {stateMenuIntro, stateMenuMain, stateMenuHelp, stateMenuPlay, stateMenuInfo, stateMenuSoundfx, stateGamePlaying, stateGamePause, stateGameOver};
-*/
+FunctionPointer whatToDo[] = {
+  stateMenuIntro,
+  stateMenuMain,
+  stateMenuHelp,
+  stateMenuPlay,
+  stateMenuInfo,
+  stateMenuSoundfx,
+  stateGamePlaying,
+  stateGamePause,
+  stateGameOve
+};
+
 byte gameState;
-boolean soundYesNo;
-int menuSelection;
-byte counter = 0;
 
 void setup()
 {
@@ -57,6 +53,12 @@ void setup()
 
 void loop()
 {
-  
+  if (!(arduboy.nextFrame())) return;
+  buttons.poll();
+  if (soundYesNo == true) arduboy.audio.on();
+  else arduboy.audio.off();
+  arduboy.clearDisplay();
+  mainGameLoop[gameState]();
+  arduboy.display();
 }
 
