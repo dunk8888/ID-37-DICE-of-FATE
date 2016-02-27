@@ -98,7 +98,6 @@ PROGMEM const unsigned char qrcode[] = {
 //define game states (on main menu)
 #define STATE_GAME_PLAYING       6
 
-extern byte gameState;
 
 boolean soundYesNo;
 int menuSelection;
@@ -107,31 +106,27 @@ byte counter = 0;
 void stateMenuIntro()
 {
   counter++;
-  if (counter < 181) arduboy.drawBitmap(0, 0, TEAMarg, 128, 64, WHITE);
-  if (counter > 180) arduboy.drawBitmap(0, 0, titleScreen, 128, 64, WHITE);
-  if ((counter > 255) || buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
+  arduboy.drawBitmap(0, 8, TEAMarg, 128, 48, WHITE);
+  if (counter > 180) gameState = STATE_MENU_MAIN;
 }
 
 void stateMenuMain()
 {
-  if (buttons.justPressed(DOWN_BUTTON) && (menuSelection < 5)) menuSelection++;
-  if (buttons.justPressed(UP_BUTTON) && (menuSelection > 2)) menuSelection--;
+  arduboy.drawBitmap(0, 0, titleScreen, 128, 64, WHITE);
+  if (buttons.justPressed(LEFT_BUTTON) && (menuSelection < 5)) menuSelection++;
+  if (buttons.justPressed(RIGHT_BUTTON) && (menuSelection > 2)) menuSelection--;
   if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = menuSelection;
 }
 
 void stateMenuHelp()
 {
-  arduboy.drawBitmap(32, 0, titleScreen, 64, 64, WHITE);
   if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
-void stateMenuPlay()
-{
-  gameState = STATE_GAME_PLAYING;
-}
 
 void stateMenuInfo()
 {
+  arduboy.drawBitmap(32, 0, qrcode, 64, 64, WHITE);
   if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 

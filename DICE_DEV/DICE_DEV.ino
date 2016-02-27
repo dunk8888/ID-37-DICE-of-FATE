@@ -33,7 +33,10 @@ FunctionPointer mainGameLoop[] = {
   stateMenuPlay,
   stateMenuInfo,
   stateMenuSoundfx,
-  stateGamePlaying,
+  stateDiceType,
+  stateDiceAmount,
+  stateDiceShake,
+  stateDiceResult,
 };
 
 byte gameState;
