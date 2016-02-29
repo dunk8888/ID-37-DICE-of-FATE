@@ -7,7 +7,7 @@
 byte currentDice;
 int slideCounter;
 boolean slideLeft;
-boolean sliding;
+boolean slidingDice;
 
 //define menu states (on main menu)
 #define STATE_MENU_INTRO         0
@@ -50,7 +50,7 @@ void stateMenuPlay()
     }
   }
   slideLeft = true;
-  sliding = false;
+  slidingDice = false;
   currentDice = 2;
   slideCounter = 0;
   gameState = STATE_GAME_PLAYING;
@@ -63,28 +63,28 @@ void stateDiceType()
   {
     sprites.drawSelfMasked(rollingDice[i].x, rollingDice[i].y, allDice, rollingDice[i].type);
   }
-  if (buttons.justPressed(RIGHT_BUTTON) && !sliding)
+  if (buttons.justPressed(RIGHT_BUTTON) && !slidingDice)
   {
-    sliding = true;
+    slidingDice = true;
     slideLeft = true;
   }
-  if (buttons.justPressed(LEFT_BUTTON) && !sliding)
+  if (buttons.justPressed(LEFT_BUTTON) && !slidingDice)
   {
-    sliding = true;
+    slidingDice = true;
     slideLeft = false;
   }
-  if (buttons.justPressed(RIGHT_BUTTON) && sliding)
+  if (buttons.justPressed(RIGHT_BUTTON) && slidingDice)
   {
     slideCounter = 43 - slideCounter;
     slideLeft = true;
   }
-  if (buttons.justPressed(LEFT_BUTTON) && sliding)
+  if (buttons.justPressed(LEFT_BUTTON) && slidingDice)
   {
     slideCounter = 43 - slideCounter;
     slideLeft = false;
   }
 
-  if (slideLeft && sliding && (slideCounter < 44))
+  if (slideLeft && slidingDice && (slideCounter < 44))
   {
     slideCounter++;
     for (byte i = 0; i < 5; i++)
@@ -93,7 +93,7 @@ void stateDiceType()
     }
   }
 
-  if (!slideLeft && sliding && (slideCounter < 44))
+  if (!slideLeft && slidingDice && (slideCounter < 44))
   {
     slideCounter++;
     for (byte i = 0; i < 5; i++)
@@ -101,14 +101,11 @@ void stateDiceType()
       rollingDice[i].x +=2;
     }
   }
-  /*
-  if (slideCounter > 43)
+  if (buttons.justPressed(UP_BUTTON || DOWN_BUTTON))
   {
-    slideCounter = 0;
-    sliding = false;
-    slideLeft = false;
+    slidingDice = false;
   }
-  */
+  if (slidingDice) Serial.println (slidecounter);
 }
 
 void stateDiceAmount()
