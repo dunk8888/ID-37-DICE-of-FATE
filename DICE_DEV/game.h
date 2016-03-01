@@ -10,10 +10,7 @@ byte amountOfDice;
 int slideCounter;
 boolean slideLeft;
 boolean slidingDice;
-<<<<<<< HEAD
 boolean goBack;
-=======
->>>>>>> origin/master
 
 //define menu states (on main menu)
 #define STATE_MENU_INTRO         0
@@ -58,12 +55,8 @@ void stateMenuPlay()
   }
   slideLeft = true;
   slidingDice = false;
-<<<<<<< HEAD
   goBack = false;
   currentDice = 3;
-=======
-  currentDice = 2;
->>>>>>> origin/master
   slideCounter = 0;
   amountOfDice = 2;
   gameState = STATE_DICE_TYPE;
@@ -80,32 +73,20 @@ void stateDiceType()
   {
     sprites.drawSelfMasked(rollingDice[i].x - 44 , rollingDice[i].y, allDice, rollingDice[i].type);
   }
-<<<<<<< HEAD
   if (buttons.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < 5))
-=======
-  if (buttons.justPressed(RIGHT_BUTTON) && !slidingDice)
->>>>>>> origin/master
   {
     slidingDice = true;
     slideLeft = true;
     currentDice++;
   }
-<<<<<<< HEAD
   if (buttons.justPressed(LEFT_BUTTON) && !slidingDice && (currentDice > 1))
-=======
-  if (buttons.justPressed(LEFT_BUTTON) && !slidingDice)
->>>>>>> origin/master
   {
     slidingDice = true;
     slideLeft = false;
     currentDice--;
   }
-<<<<<<< HEAD
 
   if (buttons.justPressed(B_BUTTON))
-=======
-  if (buttons.justPressed(RIGHT_BUTTON) && slidingDice)
->>>>>>> origin/master
   {
 
     for (byte i = 0; i < 5; i++)
@@ -117,20 +98,12 @@ void stateDiceType()
 
     gameState = STATE_DICE_AMOUNT;
   }
-<<<<<<< HEAD
   if (buttons.justPressed(A_BUTTON))
-=======
-  if (buttons.justPressed(LEFT_BUTTON) && slidingDice)
->>>>>>> origin/master
   {
     gameState = STATE_MENU_MAIN;
   }
 
-<<<<<<< HEAD
   if (slideLeft && slidingDice && (slideCounter < 43))
-=======
-  if (slideLeft && slidingDice && (slideCounter < 44))
->>>>>>> origin/master
   {
     slideCounter += 2;
     for (byte i = 0; i < 5; i++)
@@ -139,11 +112,7 @@ void stateDiceType()
     }
   }
 
-<<<<<<< HEAD
   if (!slideLeft && slidingDice && (slideCounter < 43))
-=======
-  if (!slideLeft && slidingDice && (slideCounter < 44))
->>>>>>> origin/master
   {
     slideCounter += 2;
     for (byte i = 0; i < 5; i++)
@@ -151,19 +120,11 @@ void stateDiceType()
       rollingDice[i].x += 2;
     }
   }
-<<<<<<< HEAD
   if (slideCounter > 43)
   {
     slideCounter = 0;
     slidingDice = false;
   }
-=======
-  if (buttons.justPressed(UP_BUTTON || DOWN_BUTTON))
-  {
-    slidingDice = false;
-  }
-  if (slidingDice) Serial.println (slidecounter);
->>>>>>> origin/master
 }
 
 void stateDiceAmount()
