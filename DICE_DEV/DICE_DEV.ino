@@ -48,6 +48,7 @@ void setup()
   gameState = STATE_MENU_INTRO;
   if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
   menuSelection = STATE_MENU_PLAY;
+  Serial.begin(9600);
 }
 
 void loop()
