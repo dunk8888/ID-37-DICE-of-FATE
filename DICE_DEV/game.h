@@ -3,11 +3,14 @@
 
 #include "inputs.h"
 #include "dice.h"
+#include "numbers.h"
 
 byte currentDice;
+byte amountOfDice;
 int slideCounter;
 boolean slideLeft;
-boolean sliding;
+boolean slidingDice;
+boolean goBack;
 
 //define menu states (on main menu)
 #define STATE_MENU_INTRO         0
@@ -18,10 +21,11 @@ boolean sliding;
 #define STATE_MENU_SOUNDFX       5
 
 //define game states (on main menu)
-#define STATE_GAME_PLAYING       6
+#define STATE_DICE_TYPE          6
+#define STATE_DICE_AMOUNT        7
+#define STATE_DICE_SHAKE         8
+#define STATE_DICE_RESULT        9
 
-
-Sprites sprites(arduboy);
 
 extern Arduboy arduboy;
 extern byte gameState;
@@ -31,7 +35,7 @@ struct Dice
   public:
     int x, y;
     byte type;
-    byte amount[5];
+    byte result[5];
 };
 
 Dice rollingDice[5];
@@ -46,79 +50,125 @@ void stateMenuPlay()
     rollingDice[i].y = 12;
     for (byte k = 0; k < 5; k++)
     {
-      rollingDice[i].amount[k] = 2;
+      rollingDice[i].result[k] = 1;
     }
   }
   slideLeft = true;
-  sliding = false;
-  currentDice = 2;
+  slidingDice = false;
+  goBack = false;
+  currentDice = 3;
   slideCounter = 0;
-  gameState = STATE_GAME_PLAYING;
+  amountOfDice = 2;
+  gameState = STATE_DICE_TYPE;
 }
 
 
 void stateDiceType()
 {
+  arduboy.drawPixel(63, 11, WHITE);
+  arduboy.drawPixel(64, 11, WHITE);
+  arduboy.drawPixel(63, 52, WHITE);
+  arduboy.drawPixel(64, 52, WHITE);
   for (byte i = 0; i < 5; i++)
   {
-    sprites.drawSelfMasked(rollingDice[i].x, rollingDice[i].y, allDice, rollingDice[i].type);
+    sprites.drawSelfMasked(rollingDice[i].x - 44 , rollingDice[i].y, allDice, rollingDice[i].type);
   }
-  if (buttons.justPressed(RIGHT_BUTTON) && !sliding)
+  if (buttons.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < 5))
   {
-    sliding = true;
+    slidingDice = true;
     slideLeft = true;
+    currentDice++;
   }
-  if (buttons.justPressed(LEFT_BUTTON) && !sliding)
+  if (buttons.justPressed(LEFT_BUTTON) && !slidingDice && (currentDice > 1))
   {
-    sliding = true;
+    slidingDice = true;
     slideLeft = false;
-  }
-  if (buttons.justPressed(RIGHT_BUTTON) && sliding)
-  {
-    slideCounter = 43 - slideCounter;
-    slideLeft = true;
-  }
-  if (buttons.justPressed(LEFT_BUTTON) && sliding)
-  {
-    slideCounter = 43 - slideCounter;
-    slideLeft = false;
+    currentDice--;
   }
 
-  if (slideLeft && sliding && (slideCounter < 44))
+  if (buttons.justPressed(B_BUTTON))
   {
-    slideCounter++;
+
     for (byte i = 0; i < 5; i++)
     {
-      rollingDice[i].x -=2;
+      rollingDice[i].type = currentDice - 1;
+      rollingDice[i].x = 44;
+      rollingDice[i].y = 12;
+    }
+
+    gameState = STATE_DICE_AMOUNT;
+  }
+  if (buttons.justPressed(A_BUTTON))
+  {
+    gameState = STATE_MENU_MAIN;
+  }
+
+  if (slideLeft && slidingDice && (slideCounter < 43))
+  {
+    slideCounter += 2;
+    for (byte i = 0; i < 5; i++)
+    {
+      rollingDice[i].x -= 2;
     }
   }
 
-  if (!slideLeft && sliding && (slideCounter < 44))
+  if (!slideLeft && slidingDice && (slideCounter < 43))
   {
-    slideCounter++;
+    slideCounter += 2;
     for (byte i = 0; i < 5; i++)
     {
-      rollingDice[i].x +=2;
+      rollingDice[i].x += 2;
     }
   }
-  /*
   if (slideCounter > 43)
   {
     slideCounter = 0;
-    sliding = false;
-    slideLeft = false;
+    slidingDice = false;
   }
-  */
 }
 
 void stateDiceAmount()
 {
 
+  sprites.drawSelfMasked(rollingDice[0].x , rollingDice[0].y, allDice, rollingDice[0].type);
+  if (rollingDice[0].x < 23)
+  {
+    drawNumbers(88, 24, amountOfDice);
+  }
+  if (rollingDice[0].x > 22 && !goBack) rollingDice[0].x -= 2;
+  if ((rollingDice[0].x < 44) && goBack)
+  {
+    rollingDice[0].x += 2;
+  }
+  if (rollingDice[0].x > 43)
+  {
+    for (byte i = 0; i < 5; i++)
+    {
+      rollingDice[i].type = i;
+      rollingDice[i].x = (44 * i) - 44 * (currentDice - 3);
+    }
+    Serial.println(currentDice);
+    gameState = STATE_DICE_TYPE;
+    goBack = false;
+  }
+  if (buttons.justPressed(B_BUTTON))
+  {
+    gameState = STATE_DICE_SHAKE;
+  }
+  if (buttons.justPressed(UP_BUTTON) && amountOfDice < 5) amountOfDice++;
+  if (buttons.justPressed(DOWN_BUTTON) && amountOfDice > 1) amountOfDice--;
+  if (buttons.justPressed(A_BUTTON)) goBack = true;
 }
 
 void stateDiceShake()
 {
-
+  sprites.drawSelfMasked(0, -2, allDice, rollingDice[0].type);
+  sprites.drawSelfMasked(22, 26, allDice, rollingDice[1].type);
+  sprites.drawSelfMasked(44, -2, allDice, rollingDice[2].type);
+  sprites.drawSelfMasked(66, 26, allDice, rollingDice[3].type);
+  sprites.drawSelfMasked(88, -2, allDice, rollingDice[4].type);
+  
+  if (buttons.justPressed(A_BUTTON)) gameState = STATE_DICE_AMOUNT;
 }
 
 void stateDiceResult()

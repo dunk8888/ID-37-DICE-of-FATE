@@ -1,5 +1,5 @@
-#ifndef MENU_BITMAPS_H
-#define MENU_BITMAPS_H
+#ifndef MENU_H
+#define MENU_H
 
 #include "inputs.h"
 #include "game.h"
@@ -115,7 +115,7 @@ void stateMenuMain()
   arduboy.drawBitmap(0, 0, titleScreen, 128, 64, WHITE);
   if (buttons.justPressed(LEFT_BUTTON) && (menuSelection < 5)) menuSelection++;
   if (buttons.justPressed(RIGHT_BUTTON) && (menuSelection > 2)) menuSelection--;
-  if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = menuSelection;
+  if (buttons.justPressed(B_BUTTON)) gameState = menuSelection;
 }
 
 void stateMenuHelp()
