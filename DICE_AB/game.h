@@ -7,6 +7,7 @@
 
 byte currentDice;
 byte amountOfDice;
+byte frameDice;
 int slideCounter;
 boolean slideLeft;
 boolean slidingDice;
@@ -30,6 +31,22 @@ boolean goBack;
 extern Arduboy arduboy;
 extern byte gameState;
 
+PROGMEM const unsigned char rollButton[] = {
+// width, height
+35, 16,
+0xFF, 0x01, 0x7D, 0x15, 0x15, 0x7D, 0x01, 0xFF, 0x00, 0x00, 0x44, 0x00, 0x00, 0xFE, 0x82, 0xDA, 0xDA, 0xA2, 0xFE, 0x82, 0xBA, 0xBA, 0x82, 0xFE, 0x82, 0xBE, 0xA0, 0xA0, 0xFE, 0x82, 0xBE, 0xA0, 0xA0, 0xE0, 0x00, 
+0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+
+PROGMEM const unsigned char backButton[] = {
+// width, height
+35, 16,
+0xFF, 0x01, 0x7D, 0x55, 0x55, 0x6D, 0x01, 0xFF, 0x00, 0x00, 0x44, 0x00, 0x00, 0xFE, 0x82, 0xBA, 0xAA, 0x92, 0xFE, 0x82, 0xDA, 0xDA, 0x82, 0xFE, 0x82, 0xBA, 0xBA, 0xBE, 0xFE, 0x82, 0xEE, 0xEE, 0x92, 0xFE, 0x00, 
+0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+
 struct Dice
 {
   public:
@@ -47,7 +64,7 @@ void stateMenuPlay()
   {
     rollingDice[i].type = i;
     rollingDice[i].x = 44 * i;
-    rollingDice[i].y = 12;
+    rollingDice[i].y = 10;
     for (byte k = 0; k < 5; k++)
     {
       rollingDice[i].result[k] = 1;
@@ -59,19 +76,22 @@ void stateMenuPlay()
   currentDice = 3;
   slideCounter = 0;
   amountOfDice = 2;
+  frameDice = 0;
   gameState = STATE_DICE_TYPE;
 }
 
 
 void stateDiceType()
 {
-  arduboy.drawPixel(63, 11, WHITE);
-  arduboy.drawPixel(64, 11, WHITE);
-  arduboy.drawPixel(63, 52, WHITE);
-  arduboy.drawPixel(64, 52, WHITE);
+  arduboy.drawPixel(63, 9, WHITE);
+  arduboy.drawPixel(64, 9, WHITE);
+  arduboy.drawPixel(63, 50, WHITE);
+  arduboy.drawPixel(64, 50, WHITE);
+  sprites.drawSelfMasked(0, 0, backButton, 0);
+  sprites.drawSelfMasked(93, 0, rollButton, 0);
   for (byte i = 0; i < 5; i++)
   {
-    sprites.drawSelfMasked(rollingDice[i].x - 44 , rollingDice[i].y, allDice, rollingDice[i].type);
+    sprites.drawSelfMasked(rollingDice[i].x - 44 , rollingDice[i].y, allDice, 4 * rollingDice[i].type + frameDice);
   }
   if (buttons.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < 5))
   {
@@ -130,7 +150,7 @@ void stateDiceType()
 void stateDiceAmount()
 {
 
-  sprites.drawSelfMasked(rollingDice[0].x , rollingDice[0].y, allDice, rollingDice[0].type);
+  sprites.drawSelfMasked(rollingDice[0].x , rollingDice[0].y, allDice, 4 * rollingDice[0].type + frameDice);
   if (rollingDice[0].x < 23)
   {
     drawNumbers(88, 24, amountOfDice);
@@ -162,7 +182,7 @@ void stateDiceAmount()
 
 void stateDiceShake()
 {
-  sprites.drawSelfMasked(0, -2, allDice, rollingDice[0].type);
+  sprites.drawSelfMasked(0, -2, allDice, 4 * rollingDice[0].type + frameDice);
   sprites.drawSelfMasked(22, 26, allDice, rollingDice[1].type);
   sprites.drawSelfMasked(44, -2, allDice, rollingDice[2].type);
   sprites.drawSelfMasked(66, 26, allDice, rollingDice[3].type);

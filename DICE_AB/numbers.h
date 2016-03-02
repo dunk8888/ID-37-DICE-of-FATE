@@ -1,5 +1,5 @@
-#ifndef MENU_BITMAPS_H
-#define MENU_BITMAPS_H
+#ifndef NUMBERS_H
+#define NUMBERS_H
 
 extern Arduboy arduboy;
 Sprites sprites(arduboy);
