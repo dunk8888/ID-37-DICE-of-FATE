@@ -1,5 +1,5 @@
 /*
-  DICE: http://www.team-arg.org/dice-manual.html
+  DICE SIM: http://www.team-arg.org/dice-manual.html
 
   Arduboy version 0.1:  http://www.team-arg.org/dice-downloads.html
 
@@ -11,14 +11,10 @@
 
 */
 
-#include <Arduboy.h>
-#include <ArduboyExtra.h>
-#include <sprites.h>
-#include <simple_buttons.h>
+#include "Arglib.h"
 #include "menu.h"
 #include "game.h"
 #include "inputs.h"
-
 
 //determine the game
 #define GAME_ID 37
@@ -43,7 +39,7 @@ byte gameState;
 
 void setup()
 {
-  arduboy.begin();
+  arduboy.start();
   arduboy.setFrameRate(60);
   gameState = STATE_MENU_INTRO;
   if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
