@@ -123,7 +123,7 @@ void stateDiceTypeAndAmount()
       rollingDice[i].y = 12;
     }
 
-    gameState = STATE_DICE_AMOUNT;
+    gameState = STATE_DICE_TYPE_AND_AMOUNT;
   }
   if (buttons.justPressed(A_BUTTON))
   {
@@ -173,7 +173,7 @@ void stateDiceRolling()
   sprites.drawSelfMasked(66, 26, allDice, rollingDice[3].type);
   sprites.drawSelfMasked(88, -2, allDice, rollingDice[4].type);
   
-  if (buttons.justPressed(A_BUTTON)) gameState = STATE_DICE_AMOUNT;
+  if (buttons.justPressed(A_BUTTON)) gameState = STATE_DICE_TYPE_AND_AMOUNT;
 }
 
 void stateDiceResult()
