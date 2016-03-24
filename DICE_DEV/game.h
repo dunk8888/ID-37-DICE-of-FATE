@@ -13,18 +13,16 @@ boolean slidingDice;
 boolean goBack;
 
 //define menu states (on main menu)
-#define STATE_MENU_INTRO         0
-#define STATE_MENU_MAIN          1
-#define STATE_MENU_HELP          2
-#define STATE_MENU_PLAY          3
-#define STATE_MENU_INFO          4
-#define STATE_MENU_SOUNDFX       5
+#define STATE_MENU_INTRO             0
+#define STATE_MENU_MAIN              1
+#define STATE_MENU_HELP              2
+#define STATE_MENU_PLAY              3
+#define STATE_MENU_INFO              4
+#define STATE_MENU_SOUNDFX           5
 
 //define game states (on main menu)
-#define STATE_DICE_TYPE          6
-#define STATE_DICE_AMOUNT        7
-#define STATE_DICE_SHAKE         8
-#define STATE_DICE_RESULT        9
+#define STATE_DICE_TYPE_AND_AMOUNT   6
+#define STATE_DICE_RESULT            7
 
 
 extern Arduboy arduboy;
@@ -90,11 +88,11 @@ void stateMenuPlay()
   slideCounter = 0;
   amountOfDice = 2;
   frameDice = 0;
-  gameState = STATE_DICE_TYPE;
+  gameState = STATE_DICE_TYPE_AND_AMOUNT;
 }
 
 
-void stateDiceType()
+void stateDiceTypeAndAmount()
 {
   for (byte i = 0; i < 5; i++)
   {
@@ -167,40 +165,7 @@ void stateDiceType()
   //sprites.drawSelfMasked(93, 49, rollButton, 0);
 }
 
-void stateDiceAmount()
-{
-
-  sprites.drawSelfMasked(rollingDice[0].x , rollingDice[0].y, allDice, 4 * rollingDice[0].type + frameDice);
-  if (rollingDice[0].x < 23)
-  {
-    drawNumbers(88, 24, amountOfDice);
-  }
-  if (rollingDice[0].x > 22 && !goBack) rollingDice[0].x -= 2;
-  if ((rollingDice[0].x < 44) && goBack)
-  {
-    rollingDice[0].x += 2;
-  }
-  if (rollingDice[0].x > 43)
-  {
-    for (byte i = 0; i < 5; i++)
-    {
-      rollingDice[i].type = i;
-      rollingDice[i].x = (44 * i) - 44 * (currentDice - 3);
-    }
-    Serial.println(currentDice);
-    gameState = STATE_DICE_TYPE;
-    goBack = false;
-  }
-  if (buttons.justPressed(B_BUTTON))
-  {
-    gameState = STATE_DICE_SHAKE;
-  }
-  if (buttons.justPressed(UP_BUTTON) && amountOfDice < 5) amountOfDice++;
-  if (buttons.justPressed(DOWN_BUTTON) && amountOfDice > 1) amountOfDice--;
-  if (buttons.justPressed(A_BUTTON)) goBack = true;
-}
-
-void stateDiceShake()
+void stateDiceRolling()
 {
   sprites.drawSelfMasked(0, -2, allDice, 4 * rollingDice[0].type + frameDice);
   sprites.drawSelfMasked(22, 26, allDice, rollingDice[1].type);

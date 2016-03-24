@@ -29,9 +29,8 @@ FunctionPointer mainGameLoop[] = {
   stateMenuPlay,
   stateMenuInfo,
   stateMenuSoundfx,
-  stateDiceType,
-  stateDiceAmount,
-  stateDiceShake,
+  stateDiceTypeAndAmount,
+  stateDiceRolling,
   stateDiceResult,
 };
 
