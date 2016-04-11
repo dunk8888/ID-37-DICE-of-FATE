@@ -11,6 +11,7 @@ int slideCounter;
 boolean slideLeft;
 boolean slidingDice;
 boolean goBack;
+boolean showDiceName;
 
 //define menu states (on main menu)
 #define STATE_MENU_INTRO             0
@@ -74,16 +75,18 @@ void stateMenuPlay()
   for (byte i = 0; i < 5; i++)
   {
     rollingDice[i].type = i;
-    rollingDice[i].x = 42 * i;
-    rollingDice[i].y = 0;
+    rollingDice[i].x = 38 * i;
+    rollingDice[i].y = 7;
     for (byte k = 0; k < 5; k++)
     {
       rollingDice[i].result[k] = 1;
     }
   }
+  rollingDice[2].y = 1;
   slideLeft = true;
   slidingDice = false;
   goBack = false;
+  showDiceName = true;
   currentDice = 3;
   slideCounter = 0;
   amountOfDice = 2;
@@ -96,19 +99,23 @@ void stateDiceTypeAndAmount()
 {
   for (byte i = 0; i < 5; i++)
   {
-    sprites.drawSelfMasked(rollingDice[i].x - 40 , rollingDice[i].y, allDice, 3 * rollingDice[i].type + frameDice);
+    sprites.drawSelfMasked(rollingDice[i].x - 30 , rollingDice[i].y, allDice, 3 * rollingDice[i].type + frameDice);
   }
   if (buttons.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < 5))
   {
     slidingDice = true;
     slideLeft = true;
     currentDice++;
+    for (byte i = 0; i < 5; i++) rollingDice[i].y = 7;
+    showDiceName = false;
   }
   if (buttons.justPressed(LEFT_BUTTON) && !slidingDice && (currentDice > 1))
   {
     slidingDice = true;
     slideLeft = false;
     currentDice--;
+    for (byte i = 0; i < 5; i++) rollingDice[i].y = 7;
+    showDiceName = false;
   }
   if (buttons.justPressed(UP_BUTTON) && amountOfDice < 5) amountOfDice++;
   if (buttons.justPressed(DOWN_BUTTON) && amountOfDice > 1) amountOfDice--;
@@ -130,7 +137,7 @@ void stateDiceTypeAndAmount()
     gameState = STATE_MENU_MAIN;
   }
 
-  if (slideLeft && slidingDice && (slideCounter < 41))
+  if (slideLeft && slidingDice && (slideCounter < 37))
   {
     slideCounter += 2;
     for (byte i = 0; i < 5; i++)
@@ -139,7 +146,7 @@ void stateDiceTypeAndAmount()
     }
   }
 
-  if (!slideLeft && slidingDice && (slideCounter < 41))
+  if (!slideLeft && slidingDice && (slideCounter < 37))
   {
     slideCounter += 2;
     for (byte i = 0; i < 5; i++)
@@ -147,10 +154,14 @@ void stateDiceTypeAndAmount()
       rollingDice[i].x += 2;
     }
   }
-  if (slideCounter > 41)
+  if (slideCounter == 34)rollingDice[currentDice-1].y = 6;
+  if (slideCounter == 36)rollingDice[currentDice-1].y = 4;
+  if (slideCounter > 37)
   {
     slideCounter = 0;
     slidingDice = false;
+    rollingDice[currentDice-1].y = 1;
+    showDiceName = true;
   }
   /*
   if (currentDice > 1)sprites.drawSelfMasked(52 , 49, arrows, 0);
@@ -158,11 +169,15 @@ void stateDiceTypeAndAmount()
   if (currentDice < 5)sprites.drawSelfMasked(72 , 49, arrows, 2);
   if (amountOfDice > 1)sprites.drawSelfMasked(60 , 60, arrows, 3);
   */
-
-  drawNumbers(50, 47, amountOfDice);
-  
-  //sprites.drawSelfMasked(0, 49, backButton, 0);
-  //sprites.drawSelfMasked(93, 49, rollButton, 0);
+  sprites.drawSelfMasked(52, 48, numberFrame, 0);
+  drawNumbers(46, 50, amountOfDice);
+  sprites.drawSelfMasked(66, 48, allButtons, 4);
+  sprites.drawSelfMasked(66, 55, allButtons, 6);
+  sprites.drawSelfMasked(1, 53, allButtons, 2);
+  sprites.drawSelfMasked(12, 56, allWords, 0);
+  sprites.drawSelfMasked(97, 53, allButtons, 0);
+  sprites.drawSelfMasked(108, 56, allWords, 1);
+  if (showDiceName)sprites.drawSelfMasked(57, 40, diceName, currentDice-1);
 }
 
 void stateDiceRolling()
