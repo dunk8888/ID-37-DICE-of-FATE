@@ -29,7 +29,7 @@ boolean slideLeft;
 boolean slidingDice;
 boolean goBack;
 boolean showDiceName;
-byte diceMax[] = {4,6,8,12,20};
+byte diceMax[] = {5,7,9,13,21};
 
 
 struct Dice
@@ -37,7 +37,7 @@ struct Dice
   public:
     int x, y;
     byte type;
-    byte result[5];
+    byte result;
 };
 
 Dice rollingDice[5];
@@ -51,7 +51,7 @@ void placeDice()
     rollingDice[i].y = 7;
     for (byte k = 0; k < 5; k++)
     {
-      rollingDice[i].result[k] = 1;
+      rollingDice[i].result = 0;
     }
   }
   rollingDice[currentDice - 1].y = 1;
@@ -182,15 +182,19 @@ void stateDiceTypeAndAmount()
 
 void stateDiceRolling()
 {
-  if (arduboy.everyXFrames(30)) frameDice++;
+  for (byte i = 0; i < 5; i++)
+  {
+    rollingDice[i].result = random (1,diceMax[currentDice-1]);
+  }
+  if (arduboy.everyXFrames(8)) frameDice++;
   if (frameDice > 2) frameDice = 0;
-  sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
   if (buttons.justPressed(A_BUTTON))
   {
     gameState = STATE_DICE_TYPE_AND_AMOUNT;
     placeDice();
   }
   if (buttons.justPressed(B_BUTTON)) gameState = STATE_DICE_RESULT;
+  sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
   sprites.drawSelfMasked(1, 53, allButtons, 2);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(97, 53, allButtons, 0);
@@ -205,6 +209,11 @@ void stateDiceResult()
     gameState = STATE_DICE_TYPE_AND_AMOUNT;
     placeDice();
   }
+  drawNumbers(0, 30, rollingDice[0].result);
+  drawNumbers(24, 30, rollingDice[1].result);
+  drawNumbers(48, 30, rollingDice[2].result);
+  drawNumbers(72, 30, rollingDice[3].result);
+  drawNumbers(98, 30, rollingDice[4].result);
   sprites.drawSelfMasked(1, 53, allButtons, 2);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(97, 53, allButtons, 0);
