@@ -83,7 +83,8 @@ void drawNumbers(byte numbersX, byte numbersY, int number)
     {
       if (digit == z) j = z;
     }
-    sprites.drawSelfMasked(numbersX + (pad * 5) + (10 * i), numbersY, allNumbers, digit);
+    //sprites.drawSelfMasked(numbersX + (pad * 5) + (10 * i), numbersY, allNumbers, digit);
+    sprites.drawSelfMasked(numbersX + (-5 * (charLen-1)) + (10 * i), numbersY, allNumbers, digit);
   }
 }
 
@@ -170,7 +171,7 @@ void stateDiceTypeAndAmount()
     showDiceName = true;
   }
   sprites.drawSelfMasked(52, 48, numberFrame, 0);
-  drawNumbers(46, 50, amountOfDice);
+  drawNumbers(56, 50, amountOfDice);
   sprites.drawSelfMasked(66, 48, allButtons, 4);
   sprites.drawSelfMasked(66, 55, allButtons, 6);
   sprites.drawSelfMasked(1, 53, allButtons, 2);
@@ -209,11 +210,10 @@ void stateDiceResult()
     gameState = STATE_DICE_TYPE_AND_AMOUNT;
     placeDice();
   }
-  drawNumbers(0, 30, rollingDice[0].result);
-  drawNumbers(24, 30, rollingDice[1].result);
-  drawNumbers(48, 30, rollingDice[2].result);
-  drawNumbers(72, 30, rollingDice[3].result);
-  drawNumbers(98, 30, rollingDice[4].result);
+  for (byte i = 0; i < amountOfDice; i++)
+  {
+  drawNumbers((5+ i*26)+(15* (5-amountOfDice)), 30, rollingDice[i].result);
+  }
   sprites.drawSelfMasked(1, 53, allButtons, 2);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(97, 53, allButtons, 0);
