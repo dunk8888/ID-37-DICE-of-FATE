@@ -12,14 +12,12 @@
 */
 
 #include "Arglib.h"
+#include "globals.h"
 #include "menu.h"
 #include "game.h"
-#include "inputs.h"
 
 //determine the game
 #define GAME_ID 37
-
-Arduboy arduboy;
 
 typedef void (*FunctionPointer) ();
 FunctionPointer mainGameLoop[] = {
@@ -34,8 +32,6 @@ FunctionPointer mainGameLoop[] = {
   stateDiceResult,
 };
 
-byte gameState;
-
 void setup()
 {
   arduboy.start();
@@ -45,7 +41,6 @@ void setup()
   menuSelection = STATE_MENU_PLAY;
   if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
   arduboy.initRandomSeed();
-  Serial.begin(9600);
 }
 
 void loop()

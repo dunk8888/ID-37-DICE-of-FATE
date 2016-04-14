@@ -1,25 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "inputs.h"
-#include "game.h"
-#include "bitmaps.h"
-
-//define menu states (on main menu)
-#define STATE_MENU_INTRO         0
-#define STATE_MENU_MAIN          1
-#define STATE_MENU_HELP          2
-#define STATE_MENU_PLAY          3
-#define STATE_MENU_INFO          4
-#define STATE_MENU_SOUNDFX       5
-
-//define game states (on main menu)
-#define STATE_GAME_PLAYING       6
-
-
-boolean soundYesNo;
-int menuSelection;
-byte counter = 0;
+#include "globals.h"
 
 void stateMenuIntro()
 {
