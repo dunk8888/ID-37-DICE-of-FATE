@@ -17,8 +17,8 @@
 #define STATE_DICE_ROLLING           7
 #define STATE_DICE_RESULT            8
 
-#define BUTTON_A                     1
-#define BUTTON_B                     0
+#define BUTTON_A                     0
+#define BUTTON_B                     1
 #define BUTTON_UP                    2
 #define BUTTON_DOWN                  3
 

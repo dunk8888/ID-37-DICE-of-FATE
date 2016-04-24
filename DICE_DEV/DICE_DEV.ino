@@ -58,10 +58,10 @@ void loop()
     if (buttonPressed[i] == true)
     {
       pressedButtonCounter++;
-      Serial.print(buttonPressed[i]);
-      Serial.print(" : ");
-    }
 
+    }
+    Serial.print(buttonPressed[i]);
+    Serial.print(" : ");
   }
   Serial.println();
   if (pressedButtonCounter > 6)
@@ -72,6 +72,6 @@ void loop()
     }
     pressedButtonCounter = 0;
   }
-  
+
 }
 
