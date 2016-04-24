@@ -17,6 +17,11 @@
 #define STATE_DICE_ROLLING           7
 #define STATE_DICE_RESULT            8
 
+#define BUTTON_A                     1
+#define BUTTON_B                     0
+#define BUTTON_UP                    2
+#define BUTTON_DOWN                  3
+
 Arduboy arduboy;
 Sprites sprites(arduboy);
 SimpleButtons buttons (arduboy);
@@ -25,5 +30,7 @@ unsigned char gameState;
 boolean soundYesNo;
 int menuSelection;
 byte counter = 0;
+byte pressedButtonCounter = 0;
+boolean buttonPressed[] = {false, false, false, false};
 
 #endif
