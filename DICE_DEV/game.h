@@ -51,7 +51,6 @@ void drawNumbers(byte numbersX, byte numbersY, int number)
   //number = arduboy.cpuLoad();
   itoa(number, buf, 10);
   char charLen = strlen(buf);
-  char pad = 3 - charLen;
 
   for (byte i = 0; i < charLen; i++)
   {
@@ -70,8 +69,7 @@ void drawNumbers(byte numbersX, byte numbersY, int number)
     {
       if (digit == z) j = z;
     }
-    //sprites.drawSelfMasked(numbersX + (pad * 5) + (10 * i), numbersY, allNumbers, digit);
-    sprites.drawSelfMasked(numbersX + (-5 * (charLen - 1)) + (10 * i), numbersY, allNumbers, digit);
+    sprites.drawSelfMasked(numbersX - (4 + (5 * (charLen - 1))) + (10 * i), numbersY, allNumbers, digit);
   }
 }
 
@@ -96,7 +94,7 @@ void drawBands()
 
 void drawResult()
 {
-  drawNumbers(60, 31, diceResult);
+  drawNumbers(64, 31, diceResult);
 }
 
 
@@ -193,7 +191,7 @@ void stateDiceTypeAndAmount()
     showDiceName = true;
   }
   sprites.drawSelfMasked(52, 48, numberFrame, 0);
-  drawNumbers(56, 50, amountOfDice);
+  drawNumbers(60, 50, amountOfDice);
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(66, 48, allButtons, 2 * BUTTON_UP + buttonPressed[BUTTON_UP]);
@@ -267,7 +265,7 @@ void stateDiceResult()
       switch (amountOfDice)
       {
         case 2:
-          drawNumbers(2+(i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
+          drawNumbers(6 + (i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
           break;
         case 3:
           drawNumbers((7 + i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
@@ -278,9 +276,9 @@ void stateDiceResult()
         case 5:
           drawNumbers((7 + i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
           break;
-          
+
       }
-      
+
     }
   }
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
