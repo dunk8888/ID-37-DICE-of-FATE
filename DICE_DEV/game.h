@@ -11,7 +11,12 @@ boolean slideLeft;
 boolean slidingDice;
 boolean goBack;
 boolean showDiceName;
+boolean showResult;
 byte diceMax[] = {5, 7, 9, 13, 21};
+byte bandPositionX[] = {0, 8, 16, 24, 32, 56, 54, 56};
+byte frameBand = 0;
+byte diceResult;
+
 
 
 struct Dice
@@ -70,6 +75,32 @@ void drawNumbers(byte numbersX, byte numbersY, int number)
   }
 }
 
+void drawBorders()
+{
+  for (byte i = 0; i < 128; i++)
+  {
+    sprites.drawPlusMask(i, 24, resultBorders_plus_mask, 0);
+  }
+  for (byte i = 56; i < 128 - 56; i++)
+  {
+    sprites.drawPlusMask(i, 24, resultBorders_plus_mask, 1);
+  }
+}
+
+void drawBands()
+{
+  sprites.drawSelfMasked(130 - bandPositionX[frameBand], 28, resultBands, 0);
+  sprites.drawSelfMasked(bandPositionX[frameBand] - 56, 28, resultBands, 1);
+
+}
+
+void drawResult()
+{
+  drawNumbers(60, 31, diceResult);
+}
+
+
+
 void stateMenuPlay()
 {
   currentDice = 3;
@@ -116,7 +147,7 @@ void stateDiceTypeAndAmount()
     buttonPressed[BUTTON_DOWN] = true;
     amountOfDice--;
   }
-  
+
   if (buttons.justPressed(B_BUTTON))
   {
     buttonPressed[BUTTON_B] = true;
@@ -128,7 +159,7 @@ void stateDiceTypeAndAmount()
     }
     gameState = STATE_DICE_ROLLING;
   }
-  
+
   if (buttons.justPressed(A_BUTTON))
   {
     buttonPressed[BUTTON_A] = true;
@@ -163,8 +194,8 @@ void stateDiceTypeAndAmount()
   }
   sprites.drawSelfMasked(52, 48, numberFrame, 0);
   drawNumbers(56, 50, amountOfDice);
-  sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
-  sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
+  sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
+  sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(66, 48, allButtons, 2 * BUTTON_UP + buttonPressed[BUTTON_UP]);
   sprites.drawSelfMasked(66, 55, allButtons, 2 * BUTTON_DOWN + buttonPressed[BUTTON_DOWN]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
@@ -174,6 +205,7 @@ void stateDiceTypeAndAmount()
 
 void stateDiceRolling()
 {
+  diceResult = 0;
   for (byte i = 0; i < 5; i++)
   {
     rollingDice[i].result = random (1, diceMax[currentDice - 1]);
@@ -189,11 +221,17 @@ void stateDiceRolling()
   if (buttons.justPressed(B_BUTTON))
   {
     buttonPressed[BUTTON_B] = true;
+    frameBand = 0;
+    showResult = false;
+    for (byte i = 0; i < amountOfDice; i++)
+    {
+      diceResult = diceResult + rollingDice[i].result;
+    }
     gameState = STATE_DICE_RESULT;
   }
   sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
-  sprites.drawSelfMasked(97, 53, allButtons, 2*BUTTON_A + buttonPressed[BUTTON_A]);
-  sprites.drawSelfMasked(1, 53, allButtons, 2*BUTTON_B + buttonPressed[BUTTON_B]);
+  sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
+  sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(108, 56, allWords, 2);
 }
@@ -211,13 +249,42 @@ void stateDiceResult()
     buttonPressed[BUTTON_B] = true;
     gameState = STATE_DICE_ROLLING;
   }
-  
-  for (byte i = 0; i < amountOfDice; i++)
+
+  drawBorders();
+  drawBands();
+  if (showResult) drawResult();
+
+  if (arduboy.everyXFrames(2)) frameBand++;
+  if (frameBand > 7)
   {
-    drawNumbers((5 + i * 26) + (15 * (5 - amountOfDice)), 30, rollingDice[i].result);
+    frameBand = 7;
+    showResult = true;
   }
-  sprites.drawSelfMasked(97, 53, allButtons, 2*BUTTON_A + buttonPressed[BUTTON_A]);
-  sprites.drawSelfMasked(1, 53, allButtons, 2*BUTTON_B + buttonPressed[BUTTON_B]);
+  if (amountOfDice > 1)
+  {
+    for (byte i = 0; i < amountOfDice; i++)
+    {
+      switch (amountOfDice)
+      {
+        case 2:
+          drawNumbers(2+(i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
+          break;
+        case 3:
+          drawNumbers((7 + i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
+          break;
+        case 4:
+          drawNumbers((7 + i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
+          break;
+        case 5:
+          drawNumbers((7 + i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
+          break;
+          
+      }
+      
+    }
+  }
+  sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
+  sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(108, 56, allWords, 1);
 }
