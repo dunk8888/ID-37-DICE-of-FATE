@@ -260,46 +260,14 @@ void stateDiceResult()
   }
   if (amountOfDice > 1)
   {
-    //for (byte i = 0; i < amountOfDice; i++)
-    //{
-    switch (amountOfDice)
+    for (byte i = 0; i < amountOfDice; i++)
     {
-      case 2:
-        drawNumbers(51, 8, rollingDice[0].result);
-        drawNumbers(51 + 8 + 18, 8, rollingDice[1].result);
-        sprites.drawSelfMasked(62, 12, justADot, 0);
-        break;
-      case 3:
-        drawNumbers(38, 8, rollingDice[0].result);
-        drawNumbers(38 + 8 + 18, 8, rollingDice[1].result);
-        drawNumbers(38 + 8 + 18 + 8 + 18, 8, rollingDice[2].result);
-        sprites.drawSelfMasked(49, 12, justADot, 0);
-        sprites.drawSelfMasked(75, 12, justADot, 0);
-        break;
-      case 4:
-        drawNumbers(25, 8, rollingDice[0].result);
-        drawNumbers(25 + 8 + 18, 8, rollingDice[1].result);
-        drawNumbers(25 + 8 + 18 + 8 + 18, 8, rollingDice[2].result);
-        drawNumbers(25 + 8 + 18 + 8 + 18 + 8 + 18, 8, rollingDice[3].result);
-        sprites.drawSelfMasked(36, 12, justADot, 0);
-        sprites.drawSelfMasked(62, 12, justADot, 0);
-        sprites.drawSelfMasked(88, 12, justADot, 0);
-        break;
-      case 5:
-        drawNumbers(12, 8, rollingDice[0].result);
-        drawNumbers(12 + 8 + 18, 8, rollingDice[1].result);
-        drawNumbers(12 + 8 + 18 + 8 + 18, 8, rollingDice[2].result);
-        drawNumbers(12 + 8 + 18 + 8 + 18 + 8 + 18, 8, rollingDice[3].result);
-        drawNumbers(12 + 8 + 18 + 8 + 18 + 8 + 18 + 8 + 18, 8, rollingDice[4].result);
-        sprites.drawSelfMasked(23, 12, justADot, 0);
-        sprites.drawSelfMasked(49, 12, justADot, 0);
-        sprites.drawSelfMasked(75, 12, justADot, 0);
-        sprites.drawSelfMasked(101, 12, justADot, 0);
-        break;
-
+      drawNumbers(77 - (13 * amountOfDice) + (26 * i), 8, rollingDice[i].result);
     }
-
-    //}
+    for (byte i = 0; i < (amountOfDice - 1); i++)
+    {
+      sprites.drawSelfMasked(88 - (13 * amountOfDice) + (26 * i), 12, justADot, 0);
+    }
   }
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
