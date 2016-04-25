@@ -266,6 +266,7 @@ void stateDiceResult()
       {
         case 2:
           drawNumbers(6 + (i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
+          sprites.drawSelfMasked(6 + 11 + (15 * (5 - amountOfDice)), 12, justADot, 0);
           break;
         case 3:
           drawNumbers((7 + i * 26) + (15 * (5 - amountOfDice)), 8, rollingDice[i].result);
