@@ -1,11 +1,11 @@
 /*
-  DICE SIM: http://www.team-arg.org/dice-manual.html
+  DIGITAL DICE SIM: http://www.team-arg.org/dice-manual.html
 
   Arduboy version 0.1:  http://www.team-arg.org/dice-downloads.html
 
   MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
-  2016 JO3RI - CASTPIXEL
+  2016 - JO3RI - CASTPIXEL
 
   License: MIT : https://opensource.org/licenses/MIT
 
