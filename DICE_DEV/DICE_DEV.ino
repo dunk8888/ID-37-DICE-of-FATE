@@ -41,7 +41,6 @@ void setup()
   menuSelection = STATE_MENU_PLAY;
   if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
   arduboy.initRandomSeed();
-  Serial.begin(9600);
 }
 
 void loop()
@@ -53,22 +52,12 @@ void loop()
   arduboy.clearDisplay();
   mainGameLoop[gameState]();
   arduboy.display();
-  for (byte i = 0; i < 4; i++)
-  {
-    if (buttonPressed[i] == true)
-    {
-      pressedButtonCounter++;
-
-    }
-    Serial.print(buttonPressed[i]);
-    Serial.print(" : ");
-  }
-  Serial.println();
+  for (byte i = 0; i < 4; i++) if (buttonPressed[i] == true) pressedButtonCounter++;
   if (pressedButtonCounter > 6)
   {
-    for (byte g = 0; g < 4; g++)
+    for (byte i = 0; i < 4; i++)
     {
-      buttonPressed[g] = false;
+      buttonPressed[i] = false;
     }
     pressedButtonCounter = 0;
   }
