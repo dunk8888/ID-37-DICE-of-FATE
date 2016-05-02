@@ -55,7 +55,7 @@ void stateMenuIntro()
     slideMenuLeft = false;
     slidingMenu = false;
     menuX = 25 * (menuSelection - 2);
-    soundMenuX = 21;
+    soundMenuX = 21 * soundYesNo;
   }
 }
 
