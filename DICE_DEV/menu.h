@@ -27,15 +27,15 @@ void updateSlidingMenu(byte amount)
   if (slideMenuLeft && slidingMenu && (slideMenuCounter < amount + 1))
   {
     slideMenuCounter++;
-    menuX++;
-    //if (amount == 23)soundMenuX++;
+    if (amount == 25)menuX++;
+    if (amount == 21)soundMenuX++;
   }
 
   if (!slideMenuLeft && slidingMenu && (slideMenuCounter < amount + 1))
   {
     slideMenuCounter++;
-    menuX--;
-    //if (amount == 23)soundMenuX--;
+    if (amount == 25)menuX--;
+    if (amount == 21)soundMenuX--;
   }
 
   if (slideMenuCounter > amount - 1)
@@ -55,7 +55,7 @@ void stateMenuIntro()
     slideMenuLeft = false;
     slidingMenu = false;
     menuX = 25 * (menuSelection - 2);
-    soundMenuX = 42;
+    soundMenuX = 21;
   }
 }
 
@@ -113,20 +113,30 @@ void stateMenuSoundfx()
   titleScreen();
   updateSlidingMenu(21);
   if (!slidingMenu) sprites.drawSelfMasked(54, 47, titleLine, 1);
+  
   sprites.drawPlusMask(33 + soundMenuX - 21, 48, titleText_plus_mask, 6);
-  sprites.drawPlusMask(33 + soundMenuX, 48, titleText_plus_mask, 4 + (7 * soundYesNo));
-  sprites.drawPlusMask(33 + soundMenuX + 21 , 48, titleText_plus_mask, 5 + (7 * (1 - soundYesNo)));
+  if (!slidingMenu)sprites.drawPlusMask(33 + soundMenuX, 48, titleText_plus_mask, 4 + (7 * soundYesNo));
+  if (!slidingMenu)sprites.drawPlusMask(33 + soundMenuX + 21 , 48, titleText_plus_mask, 5 + (7 * (1 - soundYesNo)));
+  if (slidingMenu)sprites.drawPlusMask(33 + soundMenuX, 48, titleText_plus_mask, 4 );
+  if (slidingMenu)sprites.drawPlusMask(33 + soundMenuX + 21 , 48, titleText_plus_mask, 5 );
+  
+
+
+
+
+
+
   sprites.drawSelfMasked(51, 56, titleSelector, 1);
-  if (buttons.justPressed(LEFT_BUTTON) && !slidingMenu)
-  {
-    slidingMenu = true;
-    slideMenuLeft = false;
-    soundYesNo = true;
-  }
-  if (buttons.justPressed(RIGHT_BUTTON) && !slidingMenu)
+  if (buttons.justPressed(LEFT_BUTTON) && !slidingMenu && !soundYesNo)
   {
     slidingMenu = true;
     slideMenuLeft = true;
+    soundYesNo = true;
+  }
+  if (buttons.justPressed(RIGHT_BUTTON) && !slidingMenu && soundYesNo)
+  {
+    slidingMenu = true;
+    slideMenuLeft = false;
     soundYesNo = false;
   }
   if (buttons.justPressed(A_BUTTON | B_BUTTON))
