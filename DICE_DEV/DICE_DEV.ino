@@ -5,7 +5,7 @@
 
   MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
-  2016 - JO3RI - CASTPIXEL
+  2016 - CASTPIXEL - JO3RI
 
   License: MIT : https://opensource.org/licenses/MIT
 
