@@ -37,7 +37,7 @@ void setup()
   arduboy.start();
   arduboy.setFrameRate(60);
   gameState = STATE_MENU_INTRO;
-  gameState = STATE_MENU_MAIN;
+  //gameState = STATE_MENU_MAIN;
   menuSelection = STATE_MENU_PLAY;
   if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
   arduboy.initRandomSeed();
