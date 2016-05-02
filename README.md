@@ -1,4 +1,4 @@
-#DIGITAL DICE
+#DICE of FATE
 
 Digital Dice : http://www.team-arg.org/dice-manual.html  
 Download stable Arduboy versions :  http://www.team-arg.org/dice-downloads.html  
