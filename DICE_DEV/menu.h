@@ -19,7 +19,6 @@ void titleScreen()
   if (titleFrame > 7) titleFrame = 0;
   arduboy.drawBitmap(0, 0, titleTop, 128, 12, 1);
   arduboy.drawBitmap(0, 12, titleGleam[titleFrame], 128, 24, 1);
-  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, 1);
 }
 
 void updateSlidingMenu(byte amount)
@@ -62,6 +61,7 @@ void stateMenuIntro()
 void stateMenuMain()
 {
   titleScreen();
+  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, 1);
   updateSlidingMenu(25);
   if (!slidingMenu) sprites.drawSelfMasked(52, 47, titleLine, 0);
   for (byte i = 0; i < 4; i++)
@@ -104,13 +104,15 @@ void stateMenuHelp()
 
 void stateMenuInfo()
 {
-
+  titleScreen();
+  arduboy.drawBitmap(0, 36, infoScreen, 128, 32, WHITE);
   if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
 void stateMenuSoundfx()
 {
   titleScreen();
+  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, WHITE);
   updateSlidingMenu(21);
   if (!slidingMenu) sprites.drawSelfMasked(54, 47, titleLine, 1);
   
