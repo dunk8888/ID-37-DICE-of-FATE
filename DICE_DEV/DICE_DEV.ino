@@ -1,7 +1,7 @@
 /*
-  DIGITAL DICE SIM: http://www.team-arg.org/dice-manual.html
+  DICE of FATE: http://www.team-arg.org/dice-manual.html
 
-  Arduboy version 0.1:  http://www.team-arg.org/dice-downloads.html
+  Arduboy version 1.0:  http://www.team-arg.org/dice-downloads.html
 
   MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
@@ -37,7 +37,6 @@ void setup()
   arduboy.start();
   arduboy.setFrameRate(60);
   gameState = STATE_MENU_INTRO;
-  //gameState = STATE_MENU_MAIN;
   menuSelection = STATE_MENU_PLAY;
   if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
   arduboy.initRandomSeed();
@@ -61,6 +60,5 @@ void loop()
     }
     pressedButtonCounter = 0;
   }
-
 }
 

@@ -1,5 +1,5 @@
 /*
-  DIGITAL DICE SIM: http://www.team-arg.org/dice-manual.html
+  DICE of FATE: http://www.team-arg.org/dice-manual.html
 
   Arduboy version 1.0:  http://www.team-arg.org/dice-downloads.html
 

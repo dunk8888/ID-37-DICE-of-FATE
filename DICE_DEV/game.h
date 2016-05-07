@@ -126,6 +126,7 @@ void stateDiceTypeAndAmount()
     currentDice++;
     for (byte i = 0; i < 5; i++) rollingDice[i].y = 7;
     showDiceName = false;
+    arduboy.tunes.tone(300, 20);
   }
   if (buttons.justPressed(LEFT_BUTTON) && !slidingDice && (currentDice > 1))
   {
@@ -134,16 +135,19 @@ void stateDiceTypeAndAmount()
     currentDice--;
     for (byte i = 0; i < 5; i++) rollingDice[i].y = 7;
     showDiceName = false;
+    arduboy.tunes.tone(300, 20);
   }
   if (buttons.justPressed(UP_BUTTON) && amountOfDice < 5)
   {
     buttonPressed[BUTTON_UP] = true;
     amountOfDice++;
+    arduboy.tunes.tone(600, 20);
   }
   if (buttons.justPressed(DOWN_BUTTON) && amountOfDice > 1)
   {
     buttonPressed[BUTTON_DOWN] = true;
     amountOfDice--;
+    arduboy.tunes.tone(600, 20);
   }
 
   if (buttons.justPressed(B_BUTTON))
@@ -154,6 +158,7 @@ void stateDiceTypeAndAmount()
       rollingDice[i].type = currentDice - 1;
       rollingDice[i].x = 44;
       rollingDice[i].y = 12;
+      arduboy.tunes.tone(300, 20);
     }
     gameState = STATE_DICE_ROLLING;
   }
@@ -162,6 +167,7 @@ void stateDiceTypeAndAmount()
   {
     buttonPressed[BUTTON_A] = true;
     gameState = STATE_MENU_MAIN;
+    arduboy.tunes.tone(300, 20);
   }
 
   if (slideLeft && slidingDice && (slideCounter < 37))
@@ -208,13 +214,18 @@ void stateDiceRolling()
   {
     rollingDice[i].result = random (1, diceMax[currentDice - 1]);
   }
-  if (arduboy.everyXFrames(8)) frameDice++;
+  if (arduboy.everyXFrames(8))
+  {
+    frameDice++;
+    arduboy.tunes.tone(880, 20);
+  }
   if (frameDice > 2) frameDice = 0;
   if (buttons.justPressed(A_BUTTON))
   {
     buttonPressed[BUTTON_A] = true;
     gameState = STATE_DICE_TYPE_AND_AMOUNT;
     placeDice();
+    arduboy.tunes.tone(300, 20);
   }
   if (buttons.justPressed(B_BUTTON))
   {
@@ -226,6 +237,7 @@ void stateDiceRolling()
       diceResult = diceResult + rollingDice[i].result;
     }
     gameState = STATE_DICE_RESULT;
+    arduboy.tunes.tone(300, 20);
   }
   sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
@@ -241,11 +253,13 @@ void stateDiceResult()
     buttonPressed[BUTTON_A] = true;
     gameState = STATE_DICE_TYPE_AND_AMOUNT;
     placeDice();
+    arduboy.tunes.tone(300, 20);
   }
   if (buttons.justPressed(B_BUTTON))
   {
     buttonPressed[BUTTON_B] = true;
     gameState = STATE_DICE_ROLLING;
+    arduboy.tunes.tone(300, 20);
   }
 
   drawBorders();
@@ -253,6 +267,8 @@ void stateDiceResult()
   if (showResult) drawResult();
 
   if (arduboy.everyXFrames(2)) frameBand++;
+  if (frameBand == 4) arduboy.tunes.tone(880, 20);
+  if (frameBand == 6)arduboy.tunes.tone(1000, 20);
   if (frameBand > 7)
   {
     frameBand = 7;

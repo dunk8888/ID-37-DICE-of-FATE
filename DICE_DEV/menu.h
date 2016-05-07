@@ -17,9 +17,8 @@ void titleScreen()
   if (titleCounter > 47)titleCounter = 0;
   titleFrame = titleCounter;
   if (titleFrame > 7) titleFrame = 0;
-  arduboy.drawBitmap(0, 0, titleTop, 128, 12, 1);
-  arduboy.drawBitmap(0, 12, titleGleam[titleFrame], 128, 24, 1);
-  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, 1);
+  arduboy.drawBitmap(0, 0, titleTop, 128, 12, WHITE);
+  arduboy.drawBitmap(0, 12, titleGleam[titleFrame], 128, 24, WHITE);
 }
 
 void updateSlidingMenu(byte amount)
@@ -55,13 +54,14 @@ void stateMenuIntro()
     slideMenuLeft = false;
     slidingMenu = false;
     menuX = 25 * (menuSelection - 2);
-    soundMenuX = 21 * soundYesNo;
+    soundMenuX = 21 * !soundYesNo;
   }
 }
 
 void stateMenuMain()
 {
   titleScreen();
+  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, WHITE);
   updateSlidingMenu(25);
   if (!slidingMenu) sprites.drawSelfMasked(52, 47, titleLine, 0);
   for (byte i = 0; i < 4; i++)
@@ -105,30 +105,33 @@ void stateMenuHelp()
 void stateMenuInfo()
 {
   titleScreen();
+  arduboy.drawBitmap(0, 36, infoScreen, 128, 32, WHITE);
   if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
 void stateMenuSoundfx()
 {
   titleScreen();
+  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, WHITE);
   updateSlidingMenu(21);
   if (!slidingMenu) sprites.drawSelfMasked(54, 47, titleLine, 1);
-  sprites.drawPlusMask(33 + soundMenuX - 21, 48, titleText_plus_mask, 6);
-  sprites.drawPlusMask(33 + soundMenuX, 48, titleText_plus_mask, 4 + ((1-slidingMenu)*(7 * soundYesNo)));
-  sprites.drawPlusMask(33 + soundMenuX + 21 , 48, titleText_plus_mask, 5 + ((1-slidingMenu)*(7 * (1 - soundYesNo))));
+  sprites.drawPlusMask(soundMenuX + 21 - 9, 48, titleText_plus_mask, 6);
+  sprites.drawPlusMask(soundMenuX + 21 + 12, 48, titleText_plus_mask, 4 + ((1 - slidingMenu) * (7 * (1 - soundYesNo))));
+  sprites.drawPlusMask(soundMenuX + 21 + 33, 48, titleText_plus_mask, 5 + ((1 - slidingMenu) * (7 * soundYesNo)));
+
 
   sprites.drawSelfMasked(51, 56, titleSelector, 1);
-  if (buttons.justPressed(LEFT_BUTTON) && !slidingMenu && !soundYesNo)
+  if (buttons.justPressed(LEFT_BUTTON) && !slidingMenu && soundYesNo)
   {
     slidingMenu = true;
     slideMenuLeft = true;
-    soundYesNo = true;
+    soundYesNo = false;
   }
-  if (buttons.justPressed(RIGHT_BUTTON) && !slidingMenu && soundYesNo)
+  if (buttons.justPressed(RIGHT_BUTTON) && !slidingMenu && !soundYesNo)
   {
     slidingMenu = true;
     slideMenuLeft = false;
-    soundYesNo = false;
+    soundYesNo = true;
   }
   if (buttons.justPressed(A_BUTTON | B_BUTTON))
   {
