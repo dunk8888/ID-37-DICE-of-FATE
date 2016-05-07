@@ -54,7 +54,7 @@ void stateMenuIntro()
     slideMenuLeft = false;
     slidingMenu = false;
     menuX = 25 * (menuSelection - 2);
-    soundMenuX = 21 * soundYesNo;
+    soundMenuX = 21 * !soundYesNo;
   }
 }
 
@@ -115,9 +115,9 @@ void stateMenuSoundfx()
   arduboy.drawBitmap(0, 36, titleBottom, 128, 12, WHITE);
   updateSlidingMenu(21);
   if (!slidingMenu) sprites.drawSelfMasked(54, 47, titleLine, 1);
-  sprites.drawPlusMask(soundMenuX - 9, 48, titleText_plus_mask, 6);
-  sprites.drawPlusMask(soundMenuX + 12, 48, titleText_plus_mask, 4 + ((1 - slidingMenu) * (7 * (1 - soundYesNo))));
-  sprites.drawPlusMask(soundMenuX + 33, 48, titleText_plus_mask, 5 + ((1 - slidingMenu) * (7 * soundYesNo)));
+  sprites.drawPlusMask(soundMenuX + 21 - 9, 48, titleText_plus_mask, 6);
+  sprites.drawPlusMask(soundMenuX + 21 + 12, 48, titleText_plus_mask, 4 + ((1 - slidingMenu) * (7 * (1 - soundYesNo))));
+  sprites.drawPlusMask(soundMenuX + 21 + 33, 48, titleText_plus_mask, 5 + ((1 - slidingMenu) * (7 * soundYesNo)));
 
 
   sprites.drawSelfMasked(51, 56, titleSelector, 1);

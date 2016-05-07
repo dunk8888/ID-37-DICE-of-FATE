@@ -60,6 +60,5 @@ void loop()
     }
     pressedButtonCounter = 0;
   }
-
 }
 
