@@ -47,7 +47,9 @@ void Arduboy::start()
   pinMode(PIN_A_BUTTON, INPUT_PULLUP);
   pinMode(PIN_B_BUTTON, INPUT_PULLUP);
   tunes.initChannel(PIN_SPEAKER_1);
-#ifndef AB_DEVKIT
+#ifdef AB_DEVKIT
+  tunes.initChannel(PIN_SPEAKER_1); // use the same pin for both channels
+#else
   tunes.initChannel(PIN_SPEAKER_2);
 #endif
 
