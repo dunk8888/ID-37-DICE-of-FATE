@@ -3,6 +3,8 @@
 
 #include "globals.h"
 
+#define AMOUNT_OF_DICE             6
+
 byte currentDice;
 byte amountOfDice;
 byte frameDice;
@@ -12,7 +14,7 @@ boolean slidingDice;
 boolean goBack;
 boolean showDiceName;
 boolean showResult;
-byte diceMax[] = {5, 7, 9, 13, 21};
+byte diceMax[] = {3, 5, 7, 9, 13, 21};
 byte bandPositionX[] = {0, 8, 16, 24, 32, 56, 54, 56};
 byte frameBand = 0;
 byte diceResult;
@@ -27,11 +29,11 @@ struct Dice
     byte result;
 };
 
-Dice rollingDice[5];
+Dice rollingDice[AMOUNT_OF_DICE];
 
 void placeDice()
 {
-  for (byte i = 0; i < 5; i++)
+  for (byte i = 0; i < AMOUNT_OF_DICE; i++)
   {
     rollingDice[i].type = i;
     rollingDice[i].x = 8 + (38 * (-(currentDice - 2) + i));
@@ -115,16 +117,16 @@ void stateMenuPlay()
 
 void stateDiceTypeAndAmount()
 {
-  for (byte i = 0; i < 5; i++)
+  for (byte i = 0; i < AMOUNT_OF_DICE; i++)
   {
     sprites.drawSelfMasked(rollingDice[i].x , rollingDice[i].y, allDice, 3 * rollingDice[i].type + frameDice);
   }
-  if (arduboy.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < 5))
+  if (arduboy.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < AMOUNT_OF_DICE))
   {
     slidingDice = true;
     slideLeft = true;
     currentDice++;
-    for (byte i = 0; i < 5; i++) rollingDice[i].y = 7;
+    for (byte i = 0; i < AMOUNT_OF_DICE; i++) rollingDice[i].y = 7;
     showDiceName = false;
     arduboy.audio.tone(300, 20);
   }
@@ -133,11 +135,11 @@ void stateDiceTypeAndAmount()
     slidingDice = true;
     slideLeft = false;
     currentDice--;
-    for (byte i = 0; i < 5; i++) rollingDice[i].y = 7;
+    for (byte i = 0; i < AMOUNT_OF_DICE; i++) rollingDice[i].y = 7;
     showDiceName = false;
     arduboy.audio.tone(300, 20);
   }
-  if (arduboy.justPressed(UP_BUTTON) && amountOfDice < 5)
+  if (arduboy.justPressed(UP_BUTTON) && amountOfDice < AMOUNT_OF_DICE)
   {
     buttonPressed[BUTTON_UP] = true;
     amountOfDice++;
@@ -173,7 +175,7 @@ void stateDiceTypeAndAmount()
   if (slideLeft && slidingDice && (slideCounter < 37))
   {
     slideCounter += 2;
-    for (byte i = 0; i < 5; i++)
+    for (byte i = 0; i < AMOUNT_OF_DICE; i++)
     {
       rollingDice[i].x -= 2;
     }
@@ -182,7 +184,7 @@ void stateDiceTypeAndAmount()
   if (!slideLeft && slidingDice && (slideCounter < 37))
   {
     slideCounter += 2;
-    for (byte i = 0; i < 5; i++)
+    for (byte i = 0; i < AMOUNT_OF_DICE; i++)
     {
       rollingDice[i].x += 2;
     }
@@ -204,7 +206,7 @@ void stateDiceTypeAndAmount()
   sprites.drawSelfMasked(66, 55, allButtons, 2 * BUTTON_DOWN + buttonPressed[BUTTON_DOWN]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(108, 56, allWords, 1);
-  if (showDiceName)sprites.drawSelfMasked(57, 40, diceName, currentDice - 1);
+  if (showDiceName)sprites.drawSelfMasked(56, 40, diceName, currentDice - 1);
 }
 
 void stateDiceRolling()
