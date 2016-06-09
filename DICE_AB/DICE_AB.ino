@@ -1,7 +1,7 @@
 /*
   DICE of FATE: http://www.team-arg.org/dice-manual.html
 
-  Arduboy version 1.0:  http://www.team-arg.org/dice-downloads.html
+  Arduboy version 1.1:  http://www.team-arg.org/dice-downloads.html
 
   MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
@@ -11,16 +11,16 @@
 
 */
 
+//determine the game
+#define GAME_ID 37
+
 #include "Arglib.h"
 #include "globals.h"
 #include "menu.h"
 #include "game.h"
 
-//determine the game
-#define GAME_ID 37
-
 typedef void (*FunctionPointer) ();
-FunctionPointer mainGameLoop[] = {
+const FunctionPointer PROGMEM  mainGameLoop[] = {
   stateMenuIntro,
   stateMenuMain,
   stateMenuHelp,
@@ -36,20 +36,15 @@ void setup()
 {
   arduboy.start();
   arduboy.setFrameRate(60);
-  gameState = STATE_MENU_INTRO;
-  menuSelection = STATE_MENU_PLAY;
-  if (EEPROM.read(EEPROM_AUDIO_ON_OFF)) soundYesNo = true;
   arduboy.initRandomSeed();
 }
 
 void loop()
 {
   if (!(arduboy.nextFrame())) return;
-  buttons.poll();
-  if (soundYesNo == true) arduboy.audio.on();
-  else arduboy.audio.off();
+  arduboy.poll();
   arduboy.clearDisplay();
-  mainGameLoop[gameState]();
+  ((FunctionPointer) pgm_read_word (&mainGameLoop[gameState]))();
   arduboy.display();
   for (byte i = 0; i < 4; i++) if (buttonPressed[i] == true) pressedButtonCounter++;
   if (pressedButtonCounter > 6)

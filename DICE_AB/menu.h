@@ -17,8 +17,11 @@ void titleScreen()
   if (titleCounter > 47)titleCounter = 0;
   titleFrame = titleCounter;
   if (titleFrame > 7) titleFrame = 0;
-  arduboy.drawBitmap(0, 0, titleTop, 128, 12, WHITE);
-  arduboy.drawBitmap(0, 12, titleGleam[titleFrame], 128, 24, WHITE);
+  for (byte i = 0; i < 2; i++)
+  {
+    sprites.drawSelfMasked(i * 64, 0, titleTop, i);
+    sprites.drawSelfMasked(i * 64, 12, titleGleam, titleFrame + (i * 8));
+  }
 }
 
 void updateSlidingMenu(byte amount)
@@ -46,22 +49,23 @@ void updateSlidingMenu(byte amount)
 
 void stateMenuIntro()
 {
-  counter++;
-  arduboy.drawBitmap(0, 8, TEAMarg, 128, 48, WHITE);
-  if (counter > 180)
+  for (byte i = 0; i < 4; i++) sprites.drawSelfMasked(32 * i, 10, TEAMarg, i);
+  sprites.drawSelfMasked(43, 50, TEAM_argPart5, 0);
+  globalCounter++;
+  if (globalCounter > 180)
   {
     gameState = STATE_MENU_MAIN;
     slideMenuLeft = false;
     slidingMenu = false;
     menuX = 25 * (menuSelection - 2);
-    soundMenuX = 21 * !soundYesNo;
+    soundMenuX = 21 * !arduboy.audio.enabled();
   }
 }
 
 void stateMenuMain()
 {
   titleScreen();
-  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, WHITE);
+  for (byte i = 0; i < 2; i++) sprites.drawSelfMasked(i * 64, 36, titleBottom, i);
   updateSlidingMenu(25);
   if (!slidingMenu) sprites.drawSelfMasked(52, 47, titleLine, 0);
   for (byte i = 0; i < 4; i++)
@@ -79,67 +83,65 @@ void stateMenuMain()
   }
 
   sprites.drawSelfMasked(51, 56, titleSelector, 0);
-  if (buttons.justPressed(LEFT_BUTTON) && !slidingMenu && (menuSelection > 2))
+  if (arduboy.justPressed(LEFT_BUTTON) && !slidingMenu && (menuSelection > 2))
   {
     slidingMenu = true;
     slideMenuLeft = false;
     menuSelection--;
   }
-  if (buttons.justPressed(RIGHT_BUTTON) && !slidingMenu && (menuSelection < 5))
+  if (arduboy.justPressed(RIGHT_BUTTON) && !slidingMenu && (menuSelection < 5))
   {
     slidingMenu = true;
     slideMenuLeft = true;
     menuSelection++;
   }
 
-  if (buttons.justPressed(B_BUTTON)) gameState = menuSelection;
+  if (arduboy.justPressed(B_BUTTON)) gameState = menuSelection;
 }
 
 void stateMenuHelp()
 {
-  arduboy.drawBitmap(32, 0, qrcode, 64, 64, WHITE);
-  if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
+  for (byte i = 0; i < 2; i++) sprites.drawSelfMasked(32, 32 * i, qrcode, i);
+  if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
 
 void stateMenuInfo()
 {
   titleScreen();
-  arduboy.drawBitmap(0, 36, infoScreen, 128, 32, WHITE);
-  if (buttons.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
+  for (byte i = 0; i < 2; i++) sprites.drawSelfMasked(i*64, 36, infoScreen, i);
+  if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
 void stateMenuSoundfx()
 {
   titleScreen();
-  arduboy.drawBitmap(0, 36, titleBottom, 128, 12, WHITE);
+  for (byte i = 0; i < 2; i++) sprites.drawSelfMasked(i * 64, 36, titleBottom, i);
   updateSlidingMenu(21);
   if (!slidingMenu) sprites.drawSelfMasked(54, 47, titleLine, 1);
   sprites.drawPlusMask(soundMenuX + 21 - 9, 48, titleText_plus_mask, 6);
-  sprites.drawPlusMask(soundMenuX + 21 + 12, 48, titleText_plus_mask, 4 + ((1 - slidingMenu) * (7 * (1 - soundYesNo))));
-  sprites.drawPlusMask(soundMenuX + 21 + 33, 48, titleText_plus_mask, 5 + ((1 - slidingMenu) * (7 * soundYesNo)));
+  sprites.drawPlusMask(soundMenuX + 21 + 12, 48, titleText_plus_mask, 4 + ((1 - slidingMenu) * (7 * (1 - arduboy.audio.enabled()))));
+  sprites.drawPlusMask(soundMenuX + 21 + 33, 48, titleText_plus_mask, 5 + ((1 - slidingMenu) * (7 * arduboy.audio.enabled())));
 
 
   sprites.drawSelfMasked(51, 56, titleSelector, 1);
-  if (buttons.justPressed(LEFT_BUTTON) && !slidingMenu && soundYesNo)
+  if (arduboy.justPressed(LEFT_BUTTON) && !slidingMenu && arduboy.audio.enabled())
   {
     slidingMenu = true;
     slideMenuLeft = true;
-    soundYesNo = false;
+    arduboy.audio.off();
   }
-  if (buttons.justPressed(RIGHT_BUTTON) && !slidingMenu && !soundYesNo)
+  if (arduboy.justPressed(RIGHT_BUTTON) && !slidingMenu && !arduboy.audio.enabled())
   {
     slidingMenu = true;
     slideMenuLeft = false;
-    soundYesNo = true;
+    arduboy.audio.on();
   }
-  if (buttons.justPressed(A_BUTTON | B_BUTTON))
+  if (arduboy.justPressed(A_BUTTON | B_BUTTON))
   {
     arduboy.audio.saveOnOff();
     gameState = STATE_MENU_MAIN;
   }
-  if (soundYesNo == true) arduboy.audio.on();
-  else arduboy.audio.off();
 }
 
 #endif
