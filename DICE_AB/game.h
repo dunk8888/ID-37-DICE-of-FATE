@@ -3,18 +3,20 @@
 
 #include "globals.h"
 
-#define AMOUNT_OF_DICE             6
+#define AMOUNT_OF_DICE_TYPE             6
 
 byte currentDice;
 byte amountOfDice;
 byte frameDice;
+byte frameCoin;
+byte coinSlowDown;
 int slideCounter;
 boolean slideLeft;
 boolean slidingDice;
 boolean goBack;
 boolean showDiceName;
 boolean showResult;
-byte diceMax[] = {3, 5, 7, 9, 13, 21};
+byte diceMax[] = {2, 5, 7, 9, 13, 21};
 byte bandPositionX[] = {0, 8, 16, 24, 32, 56, 54, 56};
 byte frameBand = 0;
 byte diceResult;
@@ -29,22 +31,24 @@ struct Dice
     byte result;
 };
 
-Dice rollingDice[AMOUNT_OF_DICE];
+Dice rollingDice[AMOUNT_OF_DICE_TYPE];
 
 void placeDice()
 {
-  for (byte i = 0; i < AMOUNT_OF_DICE; i++)
+  for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
   {
     rollingDice[i].type = i;
     rollingDice[i].x = 8 + (38 * (-(currentDice - 2) + i));
     rollingDice[i].y = 7;
-    for (byte k = 0; k < 5; k++)
+    for (byte k = 0; k < AMOUNT_OF_DICE_TYPE; k++)
     {
       rollingDice[i].result = 0;
     }
   }
   rollingDice[currentDice - 1].y = 1;
   frameDice = 0;
+  frameCoin = 0;
+  coinSlowDown = 0;
 }
 
 void drawNumbers(byte numbersX, byte numbersY, int number)
@@ -117,16 +121,18 @@ void stateMenuPlay()
 
 void stateDiceTypeAndAmount()
 {
-  for (byte i = 0; i < AMOUNT_OF_DICE; i++)
+  if (currentDice < 2) amountOfDice = 1;
+  for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
   {
     sprites.drawSelfMasked(rollingDice[i].x , rollingDice[i].y, allDice, 3 * rollingDice[i].type + frameDice);
   }
-  if (arduboy.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < AMOUNT_OF_DICE))
+  if (arduboy.justPressed(RIGHT_BUTTON) && !slidingDice && (currentDice < AMOUNT_OF_DICE_TYPE))
   {
     slidingDice = true;
     slideLeft = true;
+    if (currentDice < 2) amountOfDice = 2;
     currentDice++;
-    for (byte i = 0; i < AMOUNT_OF_DICE; i++) rollingDice[i].y = 7;
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++) rollingDice[i].y = 7;
     showDiceName = false;
     arduboy.audio.tone(300, 20);
   }
@@ -135,17 +141,17 @@ void stateDiceTypeAndAmount()
     slidingDice = true;
     slideLeft = false;
     currentDice--;
-    for (byte i = 0; i < AMOUNT_OF_DICE; i++) rollingDice[i].y = 7;
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++) rollingDice[i].y = 7;
     showDiceName = false;
     arduboy.audio.tone(300, 20);
   }
-  if (arduboy.justPressed(UP_BUTTON) && amountOfDice < AMOUNT_OF_DICE)
+  if (arduboy.justPressed(UP_BUTTON) && (amountOfDice < AMOUNT_OF_DICE_TYPE) && (currentDice > 1))
   {
     buttonPressed[BUTTON_UP] = true;
     amountOfDice++;
     arduboy.audio.tone(600, 20);
   }
-  if (arduboy.justPressed(DOWN_BUTTON) && amountOfDice > 1)
+  if (arduboy.justPressed(DOWN_BUTTON) && (amountOfDice > 1) && (currentDice > 1))
   {
     buttonPressed[BUTTON_DOWN] = true;
     amountOfDice--;
@@ -155,7 +161,7 @@ void stateDiceTypeAndAmount()
   if (arduboy.justPressed(B_BUTTON))
   {
     buttonPressed[BUTTON_B] = true;
-    for (byte i = 0; i < 5; i++)
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
     {
       rollingDice[i].type = currentDice - 1;
       rollingDice[i].x = 44;
@@ -175,7 +181,7 @@ void stateDiceTypeAndAmount()
   if (slideLeft && slidingDice && (slideCounter < 37))
   {
     slideCounter += 2;
-    for (byte i = 0; i < AMOUNT_OF_DICE; i++)
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
     {
       rollingDice[i].x -= 2;
     }
@@ -184,7 +190,7 @@ void stateDiceTypeAndAmount()
   if (!slideLeft && slidingDice && (slideCounter < 37))
   {
     slideCounter += 2;
-    for (byte i = 0; i < AMOUNT_OF_DICE; i++)
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
     {
       rollingDice[i].x += 2;
     }
@@ -202,8 +208,8 @@ void stateDiceTypeAndAmount()
   drawNumbers(60, 50, amountOfDice);
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
-  sprites.drawSelfMasked(66, 48, allButtons, 2 * BUTTON_UP + buttonPressed[BUTTON_UP]);
-  sprites.drawSelfMasked(66, 55, allButtons, 2 * BUTTON_DOWN + buttonPressed[BUTTON_DOWN]);
+  if (currentDice > 1) sprites.drawSelfMasked(66, 48, allButtons, 2 * BUTTON_UP + buttonPressed[BUTTON_UP]);
+  if (currentDice > 1) sprites.drawSelfMasked(66, 55, allButtons, 2 * BUTTON_DOWN + buttonPressed[BUTTON_DOWN]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
   sprites.drawSelfMasked(108, 56, allWords, 1);
   if (showDiceName)sprites.drawSelfMasked(56, 40, diceName, currentDice - 1);
@@ -212,16 +218,19 @@ void stateDiceTypeAndAmount()
 void stateDiceRolling()
 {
   diceResult = 0;
-  for (byte i = 0; i < 5; i++)
-  {
-    rollingDice[i].result = random (1, diceMax[currentDice - 1]);
-  }
+  coinSlowDown = 0;
   if (arduboy.everyXFrames(8))
   {
     frameDice++;
     arduboy.audio.tone(880, 20);
   }
+  if (arduboy.everyXFrames(3))
+  {
+    frameCoin++;
+    arduboy.audio.tone(880, 20);
+  }
   if (frameDice > 2) frameDice = 0;
+  if (frameCoin > 7) frameCoin = 0;
   if (arduboy.justPressed(A_BUTTON))
   {
     buttonPressed[BUTTON_A] = true;
@@ -241,7 +250,22 @@ void stateDiceRolling()
     gameState = STATE_DICE_RESULT;
     arduboy.audio.tone(300, 20);
   }
-  sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
+  if (rollingDice[0].type > 0)
+  {
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
+    {
+      rollingDice[i].result = random (1, diceMax[currentDice - 1]);
+    }
+    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
+  }
+  else
+  {
+    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
+    {
+      rollingDice[i].result = random (0, diceMax[currentDice - 1]);
+    }
+    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, justCoin, frameCoin);
+  }
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
@@ -263,29 +287,46 @@ void stateDiceResult()
     gameState = STATE_DICE_ROLLING;
     arduboy.audio.tone(300, 20);
   }
-
-  drawBorders();
-  drawBands();
-  if (showResult) drawResult();
-
-  if (arduboy.everyXFrames(2)) frameBand++;
-  if (frameBand == 4) arduboy.audio.tone(880, 20);
-  if (frameBand == 6)arduboy.audio.tone(1000, 20);
-  if (frameBand > 7)
+  if (rollingDice[0].type > 0)
   {
-    frameBand = 7;
-    showResult = true;
+    drawBorders();
+    drawBands();
+    if (showResult) drawResult();
+
+    if (arduboy.everyXFrames(2)) frameBand++;
+    if (frameBand == 4) arduboy.audio.tone(880, 20);
+    if (frameBand == 6) arduboy.audio.tone(1000, 20);
+    if (frameBand > 7)
+    {
+      frameBand = 7;
+      showResult = true;
+    }
+    if (amountOfDice > 1)
+    {
+      for (byte i = 0; i < amountOfDice; i++)
+      {
+        drawNumbers(77 - (13 * amountOfDice) + (26 * i), 8, rollingDice[i].result);
+      }
+      for (byte i = 0; i < (amountOfDice - 1); i++)
+      {
+        sprites.drawSelfMasked(88 - (13 * amountOfDice) + (26 * i), 12, justADot, 0);
+      }
+    }
   }
-  if (amountOfDice > 1)
+  else
   {
-    for (byte i = 0; i < amountOfDice; i++)
+    if ((arduboy.everyXFrames(3 + coinSlowDown)) && (coinSlowDown < 3)) frameCoin++;
+    if (arduboy.everyXFrames(6) && coinSlowDown > 2)
     {
-      drawNumbers(77 - (13 * amountOfDice) + (26 * i), 8, rollingDice[i].result);
+      if ((!rollingDice[0].result) && (frameCoin != 4)) frameCoin++;
+      if ((rollingDice[0].result) && (frameCoin != 0)) frameCoin++;
     }
-    for (byte i = 0; i < (amountOfDice - 1); i++)
+    if (frameCoin > 7)
     {
-      sprites.drawSelfMasked(88 - (13 * amountOfDice) + (26 * i), 12, justADot, 0);
+      coinSlowDown++;
+      frameCoin = 0;
     }
+    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, justCoin, frameCoin);
   }
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);

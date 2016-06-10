@@ -1,7 +1,7 @@
 /*
   DICE of FATE: http://www.team-arg.org/dice-manual.html
 
-  Arduboy version 1.1:  http://www.team-arg.org/dice-downloads.html
+  Arduboy version 1.5:  http://www.team-arg.org/dice-downloads.html
 
   MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
