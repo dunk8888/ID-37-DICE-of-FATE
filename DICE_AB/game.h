@@ -4,6 +4,7 @@
 #include "globals.h"
 
 #define AMOUNT_OF_DICE_TYPE             6
+#define AMOUNT_OF_ROLLING_DICE          5
 
 byte currentDice;
 byte amountOfDice;
@@ -145,7 +146,7 @@ void stateDiceTypeAndAmount()
     showDiceName = false;
     arduboy.audio.tone(300, 20);
   }
-  if (arduboy.justPressed(UP_BUTTON) && (amountOfDice < AMOUNT_OF_DICE_TYPE) && (currentDice > 1))
+  if (arduboy.justPressed(UP_BUTTON) && (amountOfDice < AMOUNT_OF_ROLLING_DICE) && (currentDice > 1))
   {
     buttonPressed[BUTTON_UP] = true;
     amountOfDice++;
@@ -161,11 +162,11 @@ void stateDiceTypeAndAmount()
   if (arduboy.justPressed(B_BUTTON))
   {
     buttonPressed[BUTTON_B] = true;
-    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
+    for (byte i = 0; i < AMOUNT_OF_ROLLING_DICE; i++)
     {
       rollingDice[i].type = currentDice - 1;
-      rollingDice[i].x = 44;
-      rollingDice[i].y = 12;
+      rollingDice[i].x = 46;
+      rollingDice[i].y = 1;
       arduboy.audio.tone(300, 20);
     }
     gameState = STATE_DICE_ROLLING;
@@ -211,7 +212,8 @@ void stateDiceTypeAndAmount()
   if (currentDice > 1) sprites.drawSelfMasked(66, 48, allButtons, 2 * BUTTON_UP + buttonPressed[BUTTON_UP]);
   if (currentDice > 1) sprites.drawSelfMasked(66, 55, allButtons, 2 * BUTTON_DOWN + buttonPressed[BUTTON_DOWN]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
-  sprites.drawSelfMasked(108, 56, allWords, 1);
+  if (currentDice > 1) sprites.drawSelfMasked(108, 56, allWords, 1);
+  else sprites.drawSelfMasked(108, 56, allWords, 3);
   if (showDiceName)sprites.drawSelfMasked(56, 40, diceName, currentDice - 1);
 }
 
@@ -231,6 +233,22 @@ void stateDiceRolling()
   }
   if (frameDice > 2) frameDice = 0;
   if (frameCoin > 7) frameCoin = 0;
+  if (rollingDice[0].type > 0)
+  {
+    for (byte i = 0; i < AMOUNT_OF_ROLLING_DICE; i++)
+    {
+      rollingDice[i].result = random (1, diceMax[currentDice - 1]);
+    }
+    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
+  }
+  else
+  {
+    for (byte i = 0; i < AMOUNT_OF_ROLLING_DICE; i++)
+    {
+      rollingDice[i].result = random (0, diceMax[currentDice - 1]);
+    }
+    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, justCoin, frameCoin);
+  }
   if (arduboy.justPressed(A_BUTTON))
   {
     buttonPressed[BUTTON_A] = true;
@@ -250,22 +268,7 @@ void stateDiceRolling()
     gameState = STATE_DICE_RESULT;
     arduboy.audio.tone(300, 20);
   }
-  if (rollingDice[0].type > 0)
-  {
-    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
-    {
-      rollingDice[i].result = random (1, diceMax[currentDice - 1]);
-    }
-    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, allDice, 3 * rollingDice[0].type + frameDice);
-  }
-  else
-  {
-    for (byte i = 0; i < AMOUNT_OF_DICE_TYPE; i++)
-    {
-      rollingDice[i].result = random (0, diceMax[currentDice - 1]);
-    }
-    sprites.drawSelfMasked(rollingDice[0].x, rollingDice[0].y, justCoin, frameCoin);
-  }
+
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
@@ -331,7 +334,8 @@ void stateDiceResult()
   sprites.drawSelfMasked(1, 53, allButtons, 2 * BUTTON_A + buttonPressed[BUTTON_A]);
   sprites.drawSelfMasked(97, 53, allButtons, 2 * BUTTON_B + buttonPressed[BUTTON_B]);
   sprites.drawSelfMasked(12, 56, allWords, 0);
-  sprites.drawSelfMasked(108, 56, allWords, 1);
+  if (currentDice > 1) sprites.drawSelfMasked(108, 56, allWords, 1);
+  else sprites.drawSelfMasked(108, 56, allWords, 3);
 }
 
 
